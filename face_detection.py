@@ -6,10 +6,10 @@ import os
 from os.path import join as pjoin
 import sys
 import copy
-import detect_face
 import random
 import time
 from skimage import exposure
+import detect_face
 
 #face detection parameters
 minsize = 20 # minimum size of face
@@ -46,17 +46,18 @@ def main():
     i = 0
     directory = sys.argv[1]
     for f in os.listdir(directory):
+        #print f
         i += 1
         abs_f = pjoin(directory, f)
         img = read_img(abs_f)
-        #nrof_faces = face_detection(img)
-        nrof_faces = adjust_exposure(img)
-        #if nrof_faces == 0:
-        #    print f
+        nrof_faces = face_detection(img)
+        #nrof_faces = adjust_exposure(img)
         if nrof_faces == 0:
-            cv2.imwrite('./result/false_20170807/%s.jpg' % f, img)
-        else:
-            cv2.imwrite('./result/true_20170807/%s.jpg' % f, img)
+            print f
+        #if nrof_faces == 0:
+        #    cv2.imwrite('./result/false_20170807/%s.jpg' % f, img)
+        #else:
+        #    cv2.imwrite('./result/true_20170807/%s.jpg' % f, img)
         #break
     tEnd = time.time()
     print "It cost %f secs to detect %s images" % ((tEnd - tStart), i)
