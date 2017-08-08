@@ -10,6 +10,7 @@ import random
 import time
 from skimage import exposure
 import detect_face
+import matplotlib.pyplot as plt
 
 #face detection parameters
 minsize = 20 # minimum size of face
@@ -64,13 +65,43 @@ def main():
     print "it can detect %s images per second" % (i / (tEnd - tStart))
 
 def adjust_exposure(img):
-    gammas = [0.1 * i for i in range(5, 15)][::-1]
+    gammas = [0.1 * i for i in range(3, 12)][::-1]
     nrof = []
-    for gamma in gammas:
+    plt.figure('adjust_gamma',figsize=(8,8))
+
+    for i, gamma in enumerate(gammas):
         image = exposure.adjust_gamma(img, gamma)
+
+        plt.subplot(19*10 + (i + 1))
+        plt.title('image for gamma: %s' % gamma)
+        plt.imshow(image, plt.cm.gray)
+        plt.axis('off')
+
         nrof.append(face_detection(image))
+    print nrof
+    plt.show()
     return max(nrof)
 
+def adjust_log(img):
+    image = exposure.adjust_log(img)   #对数调整
+    plt.figure('adjust_gamma',figsize=(8,8))
+    
+    plt.subplot(121)
+    plt.title('origin image')
+    plt.imshow(img, plt.cm.gray)
+    plt.axis('off')
+    
+    plt.subplot(122)
+    plt.title('log')
+    plt.imshow(image, plt.cm.gray)
+    plt.axis('off')
+    
+    plt.show()
+    return face_detection(image)
+
 if __name__ == '__main__':
-    main()
-    #adjust_exposure(sys.argv[1])
+    #main()
+    img = read_img(sys.argv[1])
+    print face_detection(img)
+    adjust_exposure(img)
+    print adjust_log(img)
